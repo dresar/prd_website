@@ -1,0 +1,94 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'acara' }) %>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white"><i class="bi bi-plus-circle me-2"></i>Tambah Acara</div>
+  <div class="card-body">
+    <form method="post" action="/panel/undangan/<%= inv.id %>/acara" class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label small fw-semibold">Nama Acara <span class="text-danger">*</span></label>
+        <input type="text" name="name" class="form-control" placeholder="cth: Akad Nikah" required>
+      </div>
+      <div class="col-md-4 col-6">
+        <label class="form-label small fw-semibold">Tanggal <span class="text-danger">*</span></label>
+        <input type="date" name="date" class="form-control" required>
+      </div>
+      <div class="col-md-2 col-3">
+        <label class="form-label small fw-semibold">Mulai</label>
+        <input type="time" name="start_time" class="form-control">
+      </div>
+      <div class="col-md-2 col-3">
+        <label class="form-label small fw-semibold">Selesai</label>
+        <input type="time" name="end_time" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small fw-semibold">Nama Lokasi</label>
+        <input type="text" name="venue" class="form-control" placeholder="cth: Masjid Al-Ikhlas">
+      </div>
+      <div class="col-md-8">
+        <label class="form-label small fw-semibold">Alamat Lengkap</label>
+        <input type="text" name="address" class="form-control" placeholder="Alamat lengkap lokasi acara">
+      </div>
+      <div class="col-md-12">
+        <label class="form-label small fw-semibold">Tautan Google Maps</label>
+        <input type="url" name="map_url" class="form-control" placeholder="https://maps.google.com/...">
+      </div>
+      <div class="col-12"><button class="btn btn-dark px-4"><i class="bi bi-plus-lg me-1"></i> Tambah</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white"><i class="bi bi-calendar-event me-2"></i>Daftar Acara (<%= events.length %>)</div>
+  <% if (!events.length) { %>
+    <div class="card-body text-muted small">Belum ada acara. Tambahkan akad dan resepsi di atas.</div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Acara</th><th>Waktu</th><th>Lokasi</th><th class="text-end">Aksi</th></tr></thead>
+        <tbody>
+          <% events.forEach((ev) => { %>
+            <tr>
+              <td>
+                <b><%= ev.name %></b><br>
+                <small class="text-muted"><%= h.formatDateID(ev.date) %></small>
+              </td>
+              <td><small><%= ev.start_time || '–' %> – <%= ev.end_time || '–' %></small></td>
+              <td>
+                <small>
+                  <%= ev.venue || '–' %>
+                  <% if (ev.map_url) { %><br><a href="<%= ev.map_url %>" target="_blank" class="text-decoration-none">📍 Maps</a><% } %>
+                </small>
+              </td>
+              <td class="text-end">
+                <details class="d-inline-block text-start">
+                  <summary class="btn btn-sm btn-light border"><i class="bi bi-pencil"></i></summary>
+                  <form method="post" action="/panel/acara/<%= ev.id %>?_method=PUT" class="card p-3 shadow mt-2" style="width:340px;z-index:10;position:absolute;right:1rem">
+                    <div class="row g-2">
+                      <div class="col-12"><label class="form-label small fw-semibold">Nama</label><input type="text" name="name" class="form-control form-control-sm" value="<%= ev.name %>" required></div>
+                      <div class="col-12"><label class="form-label small fw-semibold">Tanggal</label><input type="date" name="date" class="form-control form-control-sm" value="<%= ev.date %>" required></div>
+                      <div class="col-6"><label class="form-label small fw-semibold">Mulai</label><input type="time" name="start_time" class="form-control form-control-sm" value="<%= ev.start_time %>"></div>
+                      <div class="col-6"><label class="form-label small fw-semibold">Selesai</label><input type="time" name="end_time" class="form-control form-control-sm" value="<%= ev.end_time %>"></div>
+                      <div class="col-12"><label class="form-label small fw-semibold">Lokasi</label><input type="text" name="venue" class="form-control form-control-sm" value="<%= ev.venue %>"></div>
+                      <div class="col-12"><label class="form-label small fw-semibold">Alamat</label><input type="text" name="address" class="form-control form-control-sm" value="<%= ev.address %>"></div>
+                      <div class="col-12"><label class="form-label small fw-semibold">Maps URL</label><input type="url" name="map_url" class="form-control form-control-sm" value="<%= ev.map_url %>"></div>
+                      <div class="col-12 d-flex gap-2">
+                        <button class="btn btn-sm btn-dark">Simpan</button>
+                        <button type="button" class="btn btn-sm btn-light border" onclick="this.closest('details').open=false">Batal</button>
+                      </div>
+                    </div>
+                  </form>
+                </details>
+                <form method="post" action="/panel/acara/<%= ev.id %>?_method=DELETE" class="d-inline-block" data-confirm="Hapus acara '<%= ev.name %>'?">
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/panel-footer') %>

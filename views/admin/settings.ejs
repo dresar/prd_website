@@ -1,0 +1,36 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="card border-0 shadow-sm" style="max-width:720px">
+  <div class="card-header bg-white"><i class="bi bi-gear me-2"></i>Pengaturan Situs</div>
+  <div class="card-body">
+    <form method="post" action="/admin/pengaturan" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Nama Situs</label>
+        <input type="text" name="site_name" class="form-control" value="<%= settings.site_name || '' %>" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Tagline</label>
+        <input type="text" name="site_tagline" class="form-control" value="<%= settings.site_tagline || '' %>">
+      </div>
+      <div class="col-12">
+        <label class="form-label small fw-semibold">Judul Hero (landing page)</label>
+        <input type="text" name="hero_title" class="form-control" value="<%= settings.hero_title || '' %>">
+      </div>
+      <div class="col-12">
+        <label class="form-label small fw-semibold">Sub-judul Hero</label>
+        <textarea name="hero_subtitle" rows="2" class="form-control"><%= settings.hero_subtitle || '' %></textarea>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">No. WhatsApp (tanpa +, awali 62)</label>
+        <input type="text" name="contact_wa" class="form-control" value="<%= settings.contact_wa || '' %>" placeholder="6281234567890">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Catatan Footer</label>
+        <input type="text" name="footer_note" class="form-control" value="<%= settings.footer_note || '' %>">
+      </div>
+      <div class="col-12"><button class="btn btn-dark px-4"><i class="bi bi-check-lg me-1"></i> Simpan Pengaturan</button></div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

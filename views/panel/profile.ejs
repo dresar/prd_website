@@ -1,0 +1,49 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white"><i class="bi bi-person me-2"></i>Data Profil</div>
+      <div class="card-body">
+        <form method="post" action="/panel/profil">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Nama Lengkap</label>
+            <input type="text" name="name" class="form-control" value="<%= user.name %>" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Email</label>
+            <input type="email" class="form-control" value="<%= user.email %>" disabled>
+            <div class="form-text">Email tidak dapat diubah.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">No. WhatsApp</label>
+            <input type="tel" name="phone" class="form-control" value="<%= user.phone %>">
+          </div>
+          <button class="btn btn-dark px-4"><i class="bi bi-check-lg me-1"></i> Simpan</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card border-0 shadow-sm h-100">
+      <div class="card-header bg-white"><i class="bi bi-shield-lock me-2"></i>Ganti Kata Sandi</div>
+      <div class="card-body">
+        <form method="post" action="/panel/profil/sandi">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Kata Sandi Saat Ini</label>
+            <input type="password" name="current_password" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Kata Sandi Baru</label>
+            <input type="password" name="new_password" class="form-control" minlength="6" required>
+            <div class="form-text">Minimal 6 karakter.</div>
+          </div>
+          <button class="btn btn-dark px-4"><i class="bi bi-key me-1"></i> Ganti Kata Sandi</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

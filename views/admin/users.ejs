@@ -1,0 +1,50 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4 gap-2 flex-wrap">
+  <form class="d-flex gap-2" method="get" action="/admin/pengguna">
+    <input type="search" name="q" class="form-control" placeholder="Cari nama atau email..." value="<%= q %>">
+    <button class="btn btn-dark"><i class="bi bi-search"></i></button>
+  </form>
+  <a href="/admin/pengguna/baru" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Tambah Pengguna</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white"><i class="bi bi-people me-2"></i>Daftar Pengguna (<%= users.length %>)</div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Nama</th><th>Email</th><th>Telepon</th><th>Peran</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
+      <tbody>
+        <% users.forEach((u) => { %>
+          <tr class="<%= u.is_active ? '' : 'table-light' %>">
+            <td><b><%= u.name %></b><% if (u.id === currentUser.id) { %> <span class="badge text-bg-light border">Anda</span><% } %></td>
+            <td><small><%= u.email %></small></td>
+            <td><small><%= u.phone || '–' %></small></td>
+            <td><span class="badge <%= u.role === 'admin' ? 'text-bg-dark' : 'text-bg-light border text-dark' %>"><%= u.role === 'admin' ? 'Admin' : 'User' %></span></td>
+            <td>
+              <% if (u.is_active) { %><span class="badge text-bg-success">Aktif</span><% } else { %><span class="badge text-bg-danger">Nonaktif</span><% } %>
+            </td>
+            <td class="text-end">
+              <div class="d-inline-flex gap-1">
+                <a class="btn btn-sm btn-light border" href="/admin/pengguna/<%= u.id %>/edit" title="Edit"><i class="bi bi-pencil"></i></a>
+                <% if (u.id !== currentUser.id) { %>
+                  <form method="post" action="/admin/pengguna/<%= u.id %>/status">
+                    <% if (u.is_active) { %>
+                      <button class="btn btn-sm btn-outline-warning" title="Nonaktifkan"><i class="bi bi-pause-circle"></i></button>
+                    <% } else { %>
+                      <button class="btn btn-sm btn-outline-success" title="Aktifkan"><i class="bi bi-play-circle"></i></button>
+                    <% } %>
+                  </form>
+                  <form method="post" action="/admin/pengguna/<%= u.id %>?_method=DELETE" data-confirm="Hapus pengguna <%= u.name %> beserta SELURUH undangan dan datanya?">
+                    <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>
+                  </form>
+                <% } %>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

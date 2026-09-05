@@ -1,0 +1,41 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'galeri' }) %>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white"><i class="bi bi-upload me-2"></i>Unggah Foto</div>
+  <div class="card-body">
+    <form method="post" action="/panel/undangan/<%= inv.id %>/galeri" enctype="multipart/form-data">
+      <label class="form-label small fw-semibold">Pilih satu atau beberapa foto (maks. 10 sekaligus, tiap file maks. 5MB)</label>
+      <div class="d-flex gap-2">
+        <input type="file" name="photos" class="form-control" accept="image/*" multiple required>
+        <button class="btn btn-dark text-nowrap"><i class="bi bi-upload me-1"></i> Unggah</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white"><i class="bi bi-images me-2"></i>Galeri (<%= photos.length %> foto)</div>
+  <div class="card-body">
+    <% if (!photos.length) { %>
+      <p class="text-muted small mb-0">Belum ada foto. Unggah foto prewedding atau momen berdua lainnya.</p>
+    <% } else { %>
+      <div class="row g-3">
+        <% photos.forEach((p) => { %>
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="gallery-thumb" style="background-image:url('<%= p.photo %>')">
+              <div class="actions">
+                <form method="post" action="/panel/galeri/<%= p.id %>?_method=DELETE" data-confirm="Hapus foto ini dari galeri?">
+                  <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </div>
+            </div>
+            <% if (p.caption) { %><small class="text-muted text-truncate d-block text-center mt-1"><%= p.caption %></small><% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

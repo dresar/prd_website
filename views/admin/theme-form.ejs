@@ -1,0 +1,57 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="card border-0 shadow-sm" style="max-width:720px">
+  <div class="card-header bg-white"><i class="bi bi-palette me-2"></i><%= theme ? 'Edit Tema' : 'Tambah Tema' %></div>
+  <div class="card-body">
+    <form method="post" action="<%= theme ? `/admin/tema/${theme.id}?_method=PUT` : '/admin/tema' %>" class="row g-3">
+      <div class="col-md-8">
+        <label class="form-label small fw-semibold">Nama Tema <span class="text-danger">*</span></label>
+        <input type="text" name="name" class="form-control" value="<%= theme ? theme.name : '' %>" required>
+      </div>
+      <div class="col-12">
+        <label class="form-label small fw-semibold">Deskripsi</label>
+        <input type="text" name="description" class="form-control" value="<%= theme ? theme.description : '' %>" placeholder="Deskripsi singkat nuansa tema">
+      </div>
+
+      <div class="col-12"><h6 class="fw-bold mb-0 mt-2">Warna Tema</h6></div>
+      <div class="col-6 col-md-4">
+        <label class="form-label small fw-semibold">Utama (primary)</label>
+        <input type="color" name="primary" class="form-control form-control-color w-100" value="<%= colors.primary %>">
+      </div>
+      <div class="col-6 col-md-4">
+        <label class="form-label small fw-semibold">Aksen (secondary)</label>
+        <input type="color" name="secondary" class="form-control form-control-color w-100" value="<%= colors.secondary %>">
+      </div>
+      <div class="col-6 col-md-4">
+        <label class="form-label small fw-semibold">Latar (bg)</label>
+        <input type="color" name="bg" class="form-control form-control-color w-100" value="<%= colors.bg %>">
+      </div>
+      <div class="col-6 col-md-4">
+        <label class="form-label small fw-semibold">Teks</label>
+        <input type="color" name="text" class="form-control form-control-color w-100" value="<%= colors.text %>">
+      </div>
+      <div class="col-6 col-md-4">
+        <label class="form-label small fw-semibold">Aksen lembut</label>
+        <input type="color" name="accent" class="form-control form-control-color w-100" value="<%= colors.accent %>">
+      </div>
+
+      <div class="col-12 d-flex gap-4 mt-2">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="prem" name="is_premium" value="1" <%= theme && theme.is_premium ? 'checked' : '' %>>
+          <label class="form-check-label" for="prem">Tema premium</label>
+        </div>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" role="switch" id="act" name="is_active" value="1" <%= !theme || theme.is_active ? 'checked' : '' %>>
+          <label class="form-check-label" for="act">Aktif (tampil di pilihan user)</label>
+        </div>
+      </div>
+
+      <div class="col-12 d-flex gap-2 mt-3">
+        <button class="btn btn-dark px-4"><i class="bi bi-check-lg me-1"></i> Simpan</button>
+        <a href="/admin/tema" class="btn btn-light border">Kembali</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

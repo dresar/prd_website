@@ -1,0 +1,38 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="card border-0 shadow-sm" style="max-width:640px">
+  <div class="card-header bg-white"><i class="bi bi-person me-2"></i><%= user ? 'Edit Pengguna' : 'Tambah Pengguna' %></div>
+  <div class="card-body">
+    <form method="post" action="<%= user ? `/admin/pengguna/${user.id}?_method=PUT` : '/admin/pengguna' %>" class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Nama <span class="text-danger">*</span></label>
+        <input type="text" name="name" class="form-control" value="<%= user ? user.name : '' %>" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Email <span class="text-danger">*</span></label>
+        <input type="email" name="email" class="form-control" value="<%= user ? user.email : '' %>" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">No. WhatsApp</label>
+        <input type="tel" name="phone" class="form-control" value="<%= user ? user.phone : '' %>">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small fw-semibold">Peran</label>
+        <select name="role" class="form-select">
+          <option value="user" <%= user && user.role === 'user' ? 'selected' : '' %>>User</option>
+          <option value="admin" <%= user && user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <label class="form-label small fw-semibold">Kata Sandi <%= user ? '<span class="text-muted fw-normal">(isi hanya jika ingin mengganti)</span>' : '<span class="text-danger">*</span>' %></label>
+        <input type="password" name="password" class="form-control" minlength="6" <%= user ? '' : 'required' %> placeholder="<%= user ? 'Biarkan kosong jika tetap' : 'Minimal 6 karakter' %>">
+      </div>
+      <div class="col-12 d-flex gap-2">
+        <button class="btn btn-dark px-4"><i class="bi bi-check-lg me-1"></i> Simpan</button>
+        <a href="/admin/pengguna" class="btn btn-light border">Kembali</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

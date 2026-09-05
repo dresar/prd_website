@@ -1,0 +1,64 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'cerita' }) %>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white"><i class="bi bi-plus-circle me-2"></i>Tambah Cerita</div>
+  <div class="card-body">
+    <form method="post" action="/panel/undangan/<%= inv.id %>/cerita" class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label small fw-semibold">Judul <span class="text-danger">*</span></label>
+        <input type="text" name="title" class="form-control" placeholder="cth: Awal Bertemu" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-semibold">Waktu</label>
+        <input type="text" name="date" class="form-control" placeholder="cth: Agustus 2021">
+      </div>
+      <div class="col-md-5">
+        <label class="form-label small fw-semibold">Cerita</label>
+        <input type="text" name="description" class="form-control" placeholder="Ceritakan singkat momen tersebut">
+      </div>
+      <div class="col-12"><button class="btn btn-dark px-4"><i class="bi bi-plus-lg me-1"></i> Tambah</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white"><i class="bi bi-book-heart me-2"></i>Daftar Cerita (<%= stories.length %>)</div>
+  <% if (!stories.length) { %>
+    <div class="card-body text-muted small">Belum ada cerita. Tuliskan perjalanan cinta kalian berdua.</div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Judul</th><th>Waktu</th><th>Cerita</th><th class="text-end">Aksi</th></tr></thead>
+        <tbody>
+          <% stories.forEach((s) => { %>
+            <tr>
+              <td><b><%= s.title %></b></td>
+              <td><small class="text-muted"><%= s.date || '–' %></small></td>
+              <td><small><%= s.description %></small></td>
+              <td class="text-end">
+                <details class="d-inline-block text-start">
+                  <summary class="btn btn-sm btn-light border"><i class="bi bi-pencil"></i></summary>
+                  <form method="post" action="/panel/cerita/<%= s.id %>?_method=PUT" class="card p-3 shadow mt-2" style="width:320px;z-index:10;position:absolute;right:1rem">
+                    <div class="mb-2"><label class="form-label small fw-semibold">Judul</label><input type="text" name="title" class="form-control form-control-sm" value="<%= s.title %>" required></div>
+                    <div class="mb-2"><label class="form-label small fw-semibold">Waktu</label><input type="text" name="date" class="form-control form-control-sm" value="<%= s.date %>"></div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Cerita</label><textarea name="description" rows="3" class="form-control form-control-sm"><%= s.description %></textarea></div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-dark">Simpan</button>
+                      <button type="button" class="btn btn-sm btn-light border" onclick="this.closest('details').open=false">Batal</button>
+                    </div>
+                  </form>
+                </details>
+                <form method="post" action="/panel/cerita/<%= s.id %>?_method=DELETE" class="d-inline-block" data-confirm="Hapus cerita '<%= s.title %>'?">
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/panel-footer') %>

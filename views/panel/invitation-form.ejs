@@ -1,0 +1,122 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<% if (!isCreate) { %>
+  <%- include('../partials/inv-tabs', { inv, tab: 'mempelai' }) %>
+<% } %>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white">
+    <i class="bi bi-people me-2"></i><%= isCreate ? 'Buat Undangan Baru' : 'Data Mempelai' %>
+  </div>
+  <div class="card-body">
+    <% if (isCreate) { %>
+      <div class="alert alert-info small">
+        Cukup isi nama panggilan kedua mempelai untuk memulai — data lain bisa dilengkapi setelah undangan dibuat.
+      </div>
+      <form method="post" action="/panel/undangan" class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Panggilan Mempelai Pria <span class="text-danger">*</span></label>
+          <input type="text" name="groom_nickname" class="form-control" placeholder="cth: Budi" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Panggilan Mempelai Wanita <span class="text-danger">*</span></label>
+          <input type="text" name="bride_nickname" class="form-control" placeholder="cth: Sinta" required>
+        </div>
+        <div class="col-12">
+          <button class="btn btn-dark px-4">Buat Undangan <i class="bi bi-arrow-right ms-1"></i></button>
+        </div>
+      </form>
+    <% } else { %>
+      <form method="post" action="/panel/undangan/<%= inv.id %>?_method=PUT" class="row g-3">
+        <div class="col-12">
+          <label class="form-label small fw-semibold">Judul Undangan</label>
+          <input type="text" name="title" class="form-control" value="<%= inv.title %>" placeholder="cth: Pernikahan Budi & Sinta">
+          <div class="form-text">Ditampilkan pada judul tab browser dan bagian atas undangan.</div>
+        </div>
+
+        <div class="col-12"><hr class="my-2"><h6 class="fw-bold"><i class="bi bi-person me-1"></i> Mempelai Pria</h6></div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Panggilan</label>
+          <input type="text" name="groom_nickname" class="form-control" value="<%= inv.groom_nickname %>" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Lengkap</label>
+          <input type="text" name="groom_fullname" class="form-control" value="<%= inv.groom_fullname %>" placeholder="cth: Budi Santoso, S.Kom">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Orang Tua</label>
+          <input type="text" name="groom_parents" class="form-control" value="<%= inv.groom_parents %>" placeholder="cth: Putra pertama dari Bpk. ... & Ibu ...">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Anak ke-</label>
+          <input type="number" name="groom_order" class="form-control" value="<%= inv.groom_order %>" min="1" max="15">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Instagram</label>
+          <input type="text" name="groom_instagram" class="form-control" value="<%= inv.groom_instagram %>" placeholder="username">
+        </div>
+
+        <div class="col-12"><hr class="my-2"><h6 class="fw-bold"><i class="bi bi-person-dress me-1"></i> Mempelai Wanita</h6></div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Panggilan</label>
+          <input type="text" name="bride_nickname" class="form-control" value="<%= inv.bride_nickname %>" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Lengkap</label>
+          <input type="text" name="bride_fullname" class="form-control" value="<%= inv.bride_fullname %>" placeholder="cth: Sinta Maharani, S.E">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Nama Orang Tua</label>
+          <input type="text" name="bride_parents" class="form-control" value="<%= inv.bride_parents %>" placeholder="cth: Putri kedua dari Bpk. ... & Ibu ...">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Anak ke-</label>
+          <input type="number" name="bride_order" class="form-control" value="<%= inv.bride_order %>" min="1" max="15">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label small fw-semibold">Instagram</label>
+          <input type="text" name="bride_instagram" class="form-control" value="<%= inv.bride_instagram %>" placeholder="username">
+        </div>
+
+        <div class="col-12"><hr class="my-2"><h6 class="fw-bold"><i class="bi bi-broadcast me-1"></i> Live Streaming & Kado</h6></div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Tautan Live Streaming <span class="text-muted fw-normal">(opsional)</span></label>
+          <input type="url" name="livestream_url" class="form-control" value="<%= inv.livestream_url %>" placeholder="https://...">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label small fw-semibold">Alamat Kirim Kado <span class="text-muted fw-normal">(opsional)</span></label>
+          <input type="text" name="gift_address" class="form-control" value="<%= inv.gift_address %>" placeholder="Alamat lengkap penerima kado">
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-dark px-4"><i class="bi bi-check-lg me-1"></i> Simpan</button>
+          <a href="/panel/undangan" class="btn btn-light border">Kembali</a>
+        </div>
+      </form>
+
+      <hr class="my-4">
+      <h6 class="fw-bold mb-3"><i class="bi bi-images me-1"></i> Foto</h6>
+      <div class="row g-4">
+        <% [['groom_photo', 'Foto Mempelai Pria'], ['bride_photo', 'Foto Mempelai Wanita'], ['cover_photo', 'Foto Sampul (Cover)']].forEach(([field, label]) => { %>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold"><%= label %></label>
+            <div class="photo-box <%= inv[field] ? 'has-photo' : '' %>" style="<%= inv[field] ? `background-image:url('${inv[field]}')` : '' %>">
+              <% if (!inv[field]) { %><span><i class="bi bi-image me-1"></i>Belum ada foto</span><% } %>
+            </div>
+            <form method="post" action="/panel/undangan/<%= inv.id %>/foto/<%= field %>" enctype="multipart/form-data" class="d-flex gap-1 mt-2">
+              <input type="file" name="photo" class="form-control form-control-sm" accept="image/*" required>
+              <button class="btn btn-sm btn-dark text-nowrap"><i class="bi bi-upload"></i></button>
+            </form>
+            <% if (inv[field]) { %>
+              <form method="post" action="/panel/undangan/<%= inv.id %>/foto/<%= field %>?_method=DELETE" class="mt-1" data-confirm="Hapus foto ini?">
+                <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Hapus Foto</button>
+              </form>
+            <% } %>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

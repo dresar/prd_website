@@ -1,0 +1,16 @@
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-body py-2 px-3">
+    <div class="d-flex flex-wrap align-items-center gap-1 inv-tabs">
+      <a class="inv-tab <%= tab === 'mempelai' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/edit"><i class="bi bi-people me-1"></i> Mempelai</a>
+      <a class="inv-tab <%= tab === 'acara' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/acara"><i class="bi bi-calendar-event me-1"></i> Acara</a>
+      <a class="inv-tab <%= tab === 'galeri' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/galeri"><i class="bi bi-images me-1"></i> Galeri</a>
+      <a class="inv-tab <%= tab === 'cerita' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/cerita"><i class="bi bi-book-heart me-1"></i> Cerita</a>
+      <a class="inv-tab <%= tab === 'amplop' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/amplop"><i class="bi bi-envelope-paper me-1"></i> Amplop</a>
+      <a class="inv-tab <%= tab === 'tamu' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/tamu"><i class="bi bi-person-lines-fill me-1"></i> Tamu</a>
+      <a class="inv-tab <%= tab === 'rsvp' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/rsvp"><i class="bi bi-ui-checks me-1"></i> RSVP</a>
+      <a class="inv-tab <%= tab === 'ucapan' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/ucapan"><i class="bi bi-chat-heart me-1"></i> Ucapan</a>
+      <a class="inv-tab <%= tab === 'pengaturan' ? 'active' : '' %>" href="/panel/undangan/<%= inv.id %>/pengaturan"><i class="bi bi-sliders me-1"></i> Pengaturan</a>
+      <a class="btn btn-sm btn-dark ms-auto" href="/u/<%= inv.slug %>" target="_blank"><i class="bi bi-eye me-1"></i> Pratinjau</a>
+    </div>
+  </div>
+</div>

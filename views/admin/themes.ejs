@@ -1,0 +1,42 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0">Tema (<%= themes.length %>)</h4>
+  <a href="/admin/tema/baru" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Tambah Tema</a>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Tema</th><th>Slug</th><th>Deskripsi</th><th>Jenis</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
+      <tbody>
+        <% themes.forEach((t) => { const c = h.safeJSON(t.colors, {}); %>
+          <tr class="<%= t.is_active ? '' : 'table-light' %>">
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <span style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,<%= c.bg %>,<%= c.accent %>)"></span>
+                <b><%= t.name %></b>
+              </div>
+            </td>
+            <td><code><%= t.slug %></code></td>
+            <td><small class="text-muted"><%= t.description %></small></td>
+            <td><span class="badge <%= t.is_premium ? 'text-bg-dark' : 'text-bg-light border text-dark' %>"><%= t.is_premium ? 'Premium' : 'Gratis' %></span></td>
+            <td>
+              <% if (t.is_active) { %><span class="badge text-bg-success">Aktif</span><% } else { %><span class="badge text-bg-secondary">Nonaktif</span><% } %>
+            </td>
+            <td class="text-end">
+              <div class="d-inline-flex gap-1">
+                <a class="btn btn-sm btn-light border" href="/admin/tema/<%= t.id %>/edit"><i class="bi bi-pencil"></i></a>
+                <form method="post" action="/admin/tema/<%= t.id %>?_method=DELETE" data-confirm="Hapus tema '<%= t.name %>'? Undangan yang memakainya akan kehilangan warnanya.">
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

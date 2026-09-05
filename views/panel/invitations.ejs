@@ -1,0 +1,49 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h4 class="fw-bold mb-0">Undangan Saya (<%= invs.length %>)</h4>
+  <a href="/panel/undangan/baru" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Buat Undangan</a>
+</div>
+
+<% if (!invs.length) { %>
+  <div class="card border-0 shadow-sm">
+    <div class="card-body text-center py-5">
+      <div style="font-size:3rem">💌</div>
+      <h6 class="fw-bold mt-2">Belum ada undangan</h6>
+      <p class="text-muted small">Mulai buat undangan digital pertama Anda.</p>
+      <a href="/panel/undangan/baru" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Buat Undangan</a>
+    </div>
+  </div>
+<% } else { %>
+  <div class="card border-0 shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Judul</th><th>Tautan</th><th>Status</th><th>Dibuat</th><th class="text-end">Aksi</th></tr></thead>
+        <tbody>
+          <% invs.forEach((inv) => { %>
+            <tr>
+              <td class="fw-semibold"><%= inv.title || '-' %></td>
+              <td><code>/u/<%= inv.slug %></code></td>
+              <td>
+                <% if (inv.status === 'published') { %><span class="badge text-bg-success badge-status">Terbit</span>
+                <% } else { %><span class="badge text-bg-secondary badge-status">Draf</span><% } %>
+              </td>
+              <td class="text-muted small"><%= h.formatDateTimeID(inv.created_at) %></td>
+              <td class="text-end">
+                <div class="d-inline-flex gap-1">
+                  <a class="btn btn-sm btn-dark" href="/panel/undangan/<%= inv.id %>/edit" title="Kelola"><i class="bi bi-gear"></i></a>
+                  <a class="btn btn-sm btn-light border" href="/u/<%= inv.slug %>" target="_blank" title="Pratinjau"><i class="bi bi-eye"></i></a>
+                  <form method="post" action="/panel/undangan/<%= inv.id %>?_method=DELETE" data-confirm="Hapus undangan '<%= inv.title %>' beserta seluruh datanya (tamu, RSVP, ucapan, galeri)?">
+                    <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% } %>
+
+<%- include('../partials/panel-footer') %>

@@ -1,0 +1,123 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'tamu' }) %>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-header bg-white"><i class="bi bi-plus-circle me-2"></i>Tambah Tamu</div>
+      <div class="card-body">
+        <form method="post" action="/panel/undangan/<%= inv.id %>/tamu" class="row g-3">
+          <div class="col-md-5">
+            <label class="form-label small fw-semibold">Nama Tamu <span class="text-danger">*</span></label>
+            <input type="text" name="name" class="form-control" placeholder="cth: Bapak Ahmad & Keluarga" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Kategori</label>
+            <select name="category" class="form-select">
+              <option value="umum">Umum</option>
+              <option value="keluarga">Keluarga</option>
+              <option value="teman">Teman</option>
+              <option value="kolega">Kolega / Kantor</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label small fw-semibold">No. WhatsApp</label>
+            <input type="tel" name="phone" class="form-control" placeholder="opsional">
+          </div>
+          <div class="col-12"><button class="btn btn-dark px-4"><i class="bi bi-plus-lg me-1"></i> Tambah</button></div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white"><i class="bi bi-filetype-csv me-2"></i>Impor Massal</div>
+      <div class="card-body">
+        <form method="post" action="/panel/undangan/<%= inv.id %>/tamu/impor">
+          <label class="form-label small fw-semibold">Satu tamu per baris — format: <code>Nama | kategori | no. WA</code> (kategori & no. WA opsional)</label>
+          <textarea name="names" rows="4" class="form-control font-monospace" placeholder="Bapak Ahmad & Keluarga | keluarga | 0813...
+Rina Kartika | teman | 0813...
+Tim Marketing PT Maju"></textarea>
+          <button class="btn btn-dark mt-2 px-4"><i class="bi bi-upload me-1"></i> Impor</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5">
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white"><i class="bi bi-link-45deg me-2"></i>Tautan Undangan</div>
+      <div class="card-body">
+        <p class="small text-muted">Tautan utama undangan (tanpa nama tamu):</p>
+        <div class="input-group input-group-sm">
+          <input type="text" class="form-control font-monospace" value="<%= base %>" readonly>
+          <button class="btn btn-dark" type="button" data-copy="<%= base %>">Salin</button>
+        </div>
+        <hr>
+        <p class="small text-muted">Setiap tamu di bawah punya <b>tautan personal</b> yang menampilkan namanya di sampul undangan. Salin lalu kirim via WhatsApp.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm mt-4">
+  <div class="card-header bg-white"><i class="bi bi-person-lines-fill me-2"></i>Daftar Tamu (<%= guests.length %>)</div>
+  <% if (!guests.length) { %>
+    <div class="card-body text-muted small">Belum ada tamu. Tambahkan satu per satu atau impor massal.</div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Nama</th><th>Kategori</th><th>Status Kirim</th><th class="text-end">Aksi</th></tr></thead>
+        <tbody>
+          <% guests.forEach((g) => { %>
+            <tr>
+              <td>
+                <b><%= g.name %></b><br>
+                <div class="input-group input-group-sm mt-1" style="max-width:340px">
+                  <input type="text" class="form-control font-monospace" style="font-size:0.72rem" value="<%= base %>?g=<%= g.token %>" readonly>
+                  <button class="btn btn-outline-dark" type="button" data-copy="<%= base %>?g=<%= g.token %>"><i class="bi bi-clipboard"></i></button>
+                  <a class="btn btn-outline-success" href="https://wa.me/<%= (g.phone || '').replace(/[^0-9]/g, '') %>?text=<%= encodeURIComponent('Kepada Yth. ' + g.name + ',\n\nTanpa mengurangi rasa hormat, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.\n\nBerikut undangannya:\n' + base + '?g=' + g.token) %>" target="_blank" title="Kirim via WhatsApp"><i class="bi bi-whatsapp"></i></a>
+                </div>
+              </td>
+              <td><span class="badge text-bg-light border"><%= g.category %></span></td>
+              <td>
+                <form method="post" action="/panel/tamu/<%= g.id %>/kirim">
+                  <% if (g.is_sent) { %>
+                    <button class="btn btn-sm btn-success" title="Tandai belum terkirim"><i class="bi bi-check2-circle me-1"></i>Terkirim</button>
+                  <% } else { %>
+                    <button class="btn btn-sm btn-outline-secondary" title="Tandai sudah terkirim"><i class="bi bi-circle me-1"></i>Belum</button>
+                  <% } %>
+                </form>
+              </td>
+              <td class="text-end">
+                <details class="d-inline-block text-start">
+                  <summary class="btn btn-sm btn-light border"><i class="bi bi-pencil"></i></summary>
+                  <form method="post" action="/panel/tamu/<%= g.id %>?_method=PUT" class="card p-3 shadow mt-2" style="width:280px;z-index:10;position:absolute;right:1rem">
+                    <div class="mb-2"><label class="form-label small fw-semibold">Nama</label><input type="text" name="name" class="form-control form-control-sm" value="<%= g.name %>" required></div>
+                    <div class="mb-2">
+                      <label class="form-label small fw-semibold">Kategori</label>
+                      <select name="category" class="form-select form-select-sm">
+                        <% ['umum', 'keluarga', 'teman', 'kolega'].forEach((cat) => { %>
+                          <option value="<%= cat %>" <%= g.category === cat ? 'selected' : '' %>><%= cat %></option>
+                        <% }) %>
+                      </select>
+                    </div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">No. WhatsApp</label><input type="tel" name="phone" class="form-control form-control-sm" value="<%= g.phone %>"></div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-dark">Simpan</button>
+                      <button type="button" class="btn btn-sm btn-light border" onclick="this.closest('details').open=false">Batal</button>
+                    </div>
+                  </form>
+                </details>
+                <form method="post" action="/panel/tamu/<%= g.id %>?_method=DELETE" class="d-inline-block" data-confirm="Hapus tamu '<%= g.name %>'?">
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/panel-footer') %>

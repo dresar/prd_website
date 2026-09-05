@@ -1,0 +1,42 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'ucapan' }) %>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white">
+    <i class="bi bi-chat-heart me-2"></i>Ucapan & Doa (<%= wishes.length %>)
+    <span class="small text-muted fw-normal ms-2">Sembunyikan ucapan yang tidak pantas tanpa menghapusnya.</span>
+  </div>
+  <% if (!wishes.length) { %>
+    <div class="card-body text-muted small">Belum ada ucapan masuk.</div>
+  <% } else { %>
+    <div class="list-group list-group-flush">
+      <% wishes.forEach((w) => { %>
+        <div class="list-group-item d-flex justify-content-between align-items-start gap-3 py-3">
+          <div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="avatar-sm"><%= w.name.charAt(0).toUpperCase() %></span>
+              <b><%= w.name %></b>
+              <% if (!w.is_approved) { %><span class="badge text-bg-secondary">Disembunyikan</span><% } %>
+            </div>
+            <p class="mb-1 mt-2 small"><%= w.message %></p>
+            <small class="text-muted"><%= h.formatDateTimeID(w.created_at) %></small>
+          </div>
+          <div class="d-flex flex-column gap-1 text-nowrap">
+            <form method="post" action="/panel/ucapan/<%= w.id %>/tampil">
+              <% if (w.is_approved) { %>
+                <button class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye-slash me-1"></i>Sembunyikan</button>
+              <% } else { %>
+                <button class="btn btn-sm btn-success"><i class="bi bi-eye me-1"></i>Tampilkan</button>
+              <% } %>
+            </form>
+            <form method="post" action="/panel/ucapan/<%= w.id %>?_method=DELETE" data-confirm="Hapus ucapan dari <%= w.name %>?">
+              <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash me-1"></i>Hapus</button>
+            </form>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/panel-footer') %>

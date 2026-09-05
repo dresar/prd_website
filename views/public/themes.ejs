@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %> — <%= site.site_name || 'UndanganKu' %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a href="/" class="brand"><span class="brand-icon">♥</span> <%= site.site_name || 'UndanganKu' %></a>
+    <nav class="nav-links">
+      <a href="/#fitur">Fitur</a>
+      <a href="/tema" class="active">Tema</a>
+      <a href="/#harga">Harga</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <% if (currentUser) { %>
+        <a href="<%= currentUser.role === 'admin' ? '/admin' : '/panel' %>" class="btn btn-ghost">Panel Saya</a>
+      <% } else { %>
+        <a href="/auth/masuk" class="btn btn-ghost">Masuk</a>
+        <a href="/auth/daftar" class="btn btn-solid">Buat Undangan</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+
+<section class="page-head">
+  <div class="container">
+    <span class="eyebrow">✦ Koleksi Tema ✦</span>
+    <h1>Pilih tema untuk undanganmu</h1>
+    <p>Semua tema responsif, elegan, dan bisa dipilih langsung dari panel undangan.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="grid grid-3">
+      <% themes.forEach((t) => { const c = h.safeJSON(t.colors, {}); %>
+        <div class="card-theme">
+          <div class="theme-swatch theme-swatch-lg" style="background:linear-gradient(150deg,<%= c.bg %>,<%= c.accent %>)">
+            <span class="theme-orn" style="color:<%= c.secondary %>">❦</span>
+            <span class="theme-name" style="color:<%= c.primary %>"><%= t.name %></span>
+            <span class="theme-sub" style="color:<%= c.text %>">Budi & Sinta</span>
+            <% if (t.is_premium) { %><span class="badge-premium">Premium</span><% } %>
+          </div>
+          <div class="theme-meta"><p><%= t.description %></p></div>
+        </div>
+      <% }) %>
+    </div>
+    <div class="center mt-5">
+      <a href="/auth/daftar" class="btn btn-solid btn-lg">Buat Undangan dengan Tema Ini →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div>
+      <a href="/" class="brand"><span class="brand-icon">♥</span> <%= site.site_name || 'UndanganKu' %></a>
+      <p class="footer-tag"><%= site.site_tagline || '' %></p>
+    </div>
+    <nav class="footer-links">
+      <a href="/#fitur">Fitur</a>
+      <a href="/tema">Tema</a>
+      <a href="/#harga">Harga</a>
+    </nav>
+  </div>
+  <div class="container footer-bottom">
+    <span><%= site.footer_note || '' %></span>
+  </div>
+</footer>
+
+</body>
+</html>

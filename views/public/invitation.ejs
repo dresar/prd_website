@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><%= title %></title>
+  <meta property="og:title" content="<%= inv.title || title %>">
+  <meta property="og:description" content="Turut mengundang <%= inv.groom_nickname %> & <%= inv.bride_nickname %> — <%= events.length ? h.formatDateID(events[0].date) : '' %>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/invitation.css">
+  <%
+    const c = h.safeJSON(inv.theme_colors, {});
+    const cv = {
+      primary: c.primary || '#8a6d3b',
+      secondary: c.secondary || '#c9a961',
+      bg: c.bg || '#faf7f0',
+      text: c.text || '#3d3529',
+      accent: c.accent || '#f3ead9',
+    };
+  %>
+  <style>
+    :root {
+      --primary: <%= cv.primary %>;
+      --secondary: <%= cv.secondary %>;
+      --bg: <%= cv.bg %>;
+      --text: <%= cv.text %>;
+      --accent: <%= cv.accent %>;
+    }
+  </style>
+</head>
+<body>
+
+<% if (isDraftPreview) { %>
+  <div class="draft-banner">Mode pratinjau — undangan ini belum diterbitkan. Tamu hanya bisa melihat setelah Anda menerbitkannya.</div>
+<% } %>
+
+<!-- ===== Cover ===== -->
+<div id="cover">
+  <div class="cover-inner">
+    <% if (inv.cover_photo) { %>
+      <div class="cover-photo" style="background-image:url('<%= inv.cover_photo %>')"></div>
+    <% } %>
+    <div class="cover-content">
+      <p class="cover-top">Undangan Pernikahan</p>
+      <div class="cover-orn">❦</div>
+      <h1 class="cover-names"><%= inv.groom_nickname %><span>&</span><%= inv.bride_nickname %></h1>
+      <% if (events.length) { %>
+        <p class="cover-date"><%= h.formatDateID(events[0].date) %></p>
+      <% } %>
+      <div class="cover-guest">
+        <p>Kepada Yth.</p>
+        <p class="guest-name"><%= guest ? guest.name : 'Bapak/Ibu/Saudara/i' %></p>
+      </div>
+      <button id="openBtn" type="button">✉ Buka Undangan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Konten ===== -->
+<main id="content" hidden>
+
+  <section class="inv-hero">
+    <div class="hero-orn top">❦</div>
+    <img class="hero-photo groom" src="<%= inv.groom_photo %>" alt="<%= inv.groom_nickname %>" onerror="this.style.display='none'">
+    <p class="hero-label">We Are Getting Married</p>
+    <h1 class="hero-names"><%= inv.groom_nickname %> <span>&</span> <%= inv.bride_nickname %></h1>
+    <p class="hero-date"><%= events.length ? h.formatDateID(events[0].date) : 'Tanggal akan diumumkan' %></p>
+    <% if (targetDate) { %>
+      <div id="countdown" data-target="<%= targetDate %>">
+        <div><span id="cd-d">–</span><small>Hari</small></div>
+        <div><span id="cd-h">–</span><small>Jam</small></div>
+        <div><span id="cd-m">–</span><small>Menit</small></div>
+        <div><span id="cd-s">–</span><small>Detik</small></div>
+      </div>
+    <% } %>
+    <div class="hero-orn bottom">❦</div>
+  </section>
+
+  <section class="inv-section" id="mempelai">
+    <p class="sec-label">Mempelai</p>
+    <h2 class="sec-title">Dua Hati yang Dipersatukan</h2>
+    <p class="sec-quote">“Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri supaya kamu dapat ketenangan hati dan menjadikan kasih sayang di antara kamu.”<br><em>— QS. Ar-Rum: 21</em></p>
+    <div class="couple">
+      <div class="couple-card reveal">
+        <% if (inv.groom_photo) { %><img src="<%= inv.groom_photo %>" alt="<%= inv.groom_nickname %>">
+        <% } else { %><div class="couple-avatar"><%= (inv.groom_nickname || 'P').charAt(0) %></div><% } %>
+        <h3><%= inv.groom_fullname || inv.groom_nickname %></h3>
+        <p class="small"><%= inv.groom_parents || '' %></p>
+        <% if (inv.groom_order) { %><p class="small muted">Putra ke-<%= inv.groom_order %></p><% } %>
+        <% if (inv.groom_instagram) { %><a class="ig" href="https://instagram.com/<%= inv.groom_instagram %>" target="_blank" rel="noopener">✦ <%= inv.groom_instagram %></a><% } %>
+      </div>
+      <div class="couple-amp">♥</div>
+      <div class="couple-card reveal">
+        <% if (inv.bride_photo) { %><img src="<%= inv.bride_photo %>" alt="<%= inv.bride_nickname %>">
+        <% } else { %><div class="couple-avatar"><%= (inv.bride_nickname || 'P').charAt(0) %></div><% } %>
+        <h3><%= inv.bride_fullname || inv.bride_nickname %></h3>
+        <p class="small"><%= inv.bride_parents || '' %></p>
+        <% if (inv.bride_order) { %><p class="small muted">Putri ke-<%= inv.bride_order %></p><% } %>
+        <% if (inv.bride_instagram) { %><a class="ig" href="https://instagram.com/<%= inv.bride_instagram %>" target="_blank" rel="noopener">✦ <%= inv.bride_instagram %></a><% } %>
+      </div>
+    </div>
+  </section>
+
+  <% if (events.length) { %>
+  <section class="inv-section inv-section-accent" id="acara">
+    <p class="sec-label">Save the Date</p>
+    <h2 class="sec-title">Rangkaian Acara</h2>
+    <div class="events">
+      <% events.forEach((ev) => { %>
+        <div class="event-card reveal">
+          <h3><%= ev.name %></h3>
+          <p class="event-date"><%= h.formatDateID(ev.date) %></p>
+          <% if (ev.start_time || ev.end_time) { %>
+            <p class="event-time"><%= ev.start_time %> – <%= ev.end_time %> WIB</p>
+          <% } %>
+          <% if (ev.venue) { %><p class="event-venue"><%= ev.venue %></p><% } %>
+          <% if (ev.address) { %><p class="small muted"><%= ev.address %></p><% } %>
+          <% if (ev.map_url) { %><a class="btn-map" href="<%= ev.map_url %>" target="_blank" rel="noopener">📍 Lihat Lokasi (Google Maps)</a><% } %>
+        </div>
+      <% }) %>
+    </div>
+    <% if (inv.livestream_url) { %>
+      <div class="livestream reveal">
+        <p>🎥 Bagi yang berhalangan hadir, saksikan langsung melalui:</p>
+        <a class="btn-map" href="<%= inv.livestream_url %>" target="_blank" rel="noopener">Tautan Live Streaming</a>
+      </div>
+    <% } %>
+  </section>
+  <% } %>
+
+  <% if (stories.length) { %>
+  <section class="inv-section" id="cerita">
+    <p class="sec-label">Our Journey</p>
+    <h2 class="sec-title">Cerita Cinta Kami</h2>
+    <div class="timeline">
+      <% stories.forEach((s) => { %>
+        <div class="timeline-item reveal">
+          <% if (s.date) { %><span class="timeline-date"><%= s.date %></span><% } %>
+          <h3><%= s.title %></h3>
+          <p><%= s.description %></p>
+        </div>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% if (gallery.length) { %>
+  <section class="inv-section inv-section-accent" id="galeri">
+    <p class="sec-label">Moments</p>
+    <h2 class="sec-title">Galeri Kami</h2>
+    <div class="gallery-grid">
+      <% gallery.forEach((g) => { %>
+        <img class="reveal" src="<%= g.photo %>" alt="<%= g.caption || 'Galeri' %>" data-lightbox>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <section class="inv-section" id="rsvp">
+    <p class="sec-label">Konfirmasi Kehadiran</p>
+    <h2 class="sec-title">RSVP</h2>
+    <p class="sec-note">Mohon konfirmasi kehadiran Anda sebelum acara berlangsung. Terima kasih!</p>
+    <form class="rsvp-form reveal" method="post" action="/u/<%= inv.slug %>/rsvp">
+      <% if (guest) { %><input type="hidden" name="g" value="<%= guest.token %>"><% } %>
+      <label>Nama
+        <input type="text" name="name" value="<%= guest ? guest.name : '' %>" required maxlength="100">
+      </label>
+      <label>Kehadiran
+        <div class="radio-row">
+          <span><input type="radio" name="attendance" value="hadir" checked> Hadir</span>
+          <span><input type="radio" name="attendance" value="tidak"> Berhalangan</span>
+          <span><input type="radio" name="attendance" value="ragu"> Masih Ragu</span>
+        </div>
+      </label>
+      <label>Jumlah orang <span class="muted">(termasuk Anda)</span>
+        <input type="number" name="attendee_count" min="1" max="10" value="1">
+      </label>
+      <button type="submit">Kirim Konfirmasi</button>
+    </form>
+    <div class="rsvp-stats reveal">
+      <span><b><%= rsvpCount.hadir %></b> hadir</span>
+      <span><b><%= rsvpCount.ragu %></b> ragu</span>
+      <span><b><%= rsvpCount.tidak %></b> berhalangan</span>
+    </div>
+  </section>
+
+  <section class="inv-section inv-section-accent" id="ucapan">
+    <p class="sec-label">Guest Book</p>
+    <h2 class="sec-title">Titip Ucapan & Doa</h2>
+    <form class="wish-form reveal" method="post" action="/u/<%= inv.slug %>/wishes">
+      <% if (guest) { %><input type="hidden" name="g" value="<%= guest.token %>"><% } %>
+      <label>Nama<input type="text" name="name" value="<%= guest ? guest.name : '' %>" required maxlength="100"></label>
+      <label>Ucapan & Doa<textarea name="message" rows="3" required maxlength="500" placeholder="Tuliskan ucapan terbaikmu..."></textarea></label>
+      <button type="submit">Kirim Ucapan</button>
+    </form>
+    <div class="wish-list">
+      <% wishes.forEach((w) => { %>
+        <div class="wish-card reveal">
+          <div class="wish-head"><span class="wish-avatar"><%= w.name.charAt(0).toUpperCase() %></span><b><%= w.name %></b></div>
+          <p><%= w.message %></p>
+          <span class="wish-date"><%= h.formatDateTimeID(w.created_at) %></span>
+        </div>
+      <% }) %>
+      <% if (!wishes.length) { %><p class="muted center">Jadilah yang pertama mengirim ucapan ✨</p><% } %>
+    </div>
+    <% if (wishPages > 1) { %>
+      <div class="wish-pager">
+        <% if (page > 1) { %><a href="/u/<%= inv.slug %>?page=<%= page - 1 %><%= guest ? '&g=' + guest.token : '' %>#ucapan">‹ Sebelumnya</a><% } %>
+        <span>Halaman <%= page %> dari <%= wishPages %></span>
+        <% if (page < wishPages) { %><a href="/u/<%= inv.slug %>?page=<%= page + 1 %><%= guest ? '&g=' + guest.token : '' %>#ucapan">Berikutnya ›</a><% } %>
+      </div>
+    <% } %>
+  </section>
+
+  <% if (gifts.length || inv.gift_address) { %>
+  <section class="inv-section" id="amplop">
+    <p class="sec-label">Wedding Gift</p>
+    <h2 class="sec-title">Amplop Digital</h2>
+    <p class="sec-note">Doa restu Anda adalah hadiah terindah. Namun jika ingin memberi tanda kasih, silakan melalui:</p>
+    <div class="gifts">
+      <% gifts.forEach((g) => { %>
+        <div class="gift-card reveal">
+          <span class="gift-type"><%= g.type === 'ewallet' ? 'E-Wallet' : 'Transfer Bank' %></span>
+          <h3><%= g.bank_name %></h3>
+          <p class="gift-number"><%= g.account_number %></p>
+          <p class="small muted">a.n. <%= g.account_name %></p>
+          <button type="button" class="btn-copy" data-copy="<%= g.account_number %>">📋 Salin Nomor</button>
+        </div>
+      <% }) %>
+      <% if (inv.gift_address) { %>
+        <div class="gift-card reveal">
+          <span class="gift-type">Kirim Kado</span>
+          <h3>Alamat Pengiriman</h3>
+          <p class="small"><%= inv.gift_address %></p>
+          <button type="button" class="btn-copy" data-copy="<%= inv.gift_address %>">📋 Salin Alamat</button>
+        </div>
+      <% } %>
+    </div>
+  </section>
+  <% } %>
+
+  <footer class="inv-footer">
+    <p class="script"><%= inv.groom_nickname %> & <%= inv.bride_nickname %></p>
+    <p class="small">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.</p>
+    <p class="small muted">Undangan dibuat dengan ♥ di <a href="/"><%= site.site_name || 'UndanganKu' %></a></p>
+  </footer>
+</main>
+
+<button id="musicBtn" hidden type="button" aria-label="Putar/jeda musik">🎵</button>
+<% if (inv.music_url) { %><audio id="music" src="<%= inv.music_url %>" loop preload="none"></audio><% } %>
+
+<div id="lightbox" hidden><img id="lightboxImg" src="" alt=""><button id="lightboxClose" type="button" aria-label="Tutup">×</button></div>
+
+<script src="/js/invitation.js"></script>
+</body>
+</html>

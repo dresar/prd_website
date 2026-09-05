@@ -1,0 +1,79 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'amplop' }) %>
+
+<div class="card border-0 shadow-sm mb-4">
+  <div class="card-header bg-white"><i class="bi bi-plus-circle me-2"></i>Tambah Rekening / E-Wallet</div>
+  <div class="card-body">
+    <form method="post" action="/panel/undangan/<%= inv.id %>/amplop" class="row g-3">
+      <div class="col-md-2">
+        <label class="form-label small fw-semibold">Jenis</label>
+        <select name="type" class="form-select">
+          <option value="bank">Bank</option>
+          <option value="ewallet">E-Wallet</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small fw-semibold">Nama Bank / E-Wallet <span class="text-danger">*</span></label>
+        <input type="text" name="bank_name" class="form-control" placeholder="cth: BCA / GoPay" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-semibold">Nomor Rekening <span class="text-danger">*</span></label>
+        <input type="text" name="account_number" class="form-control" required>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small fw-semibold">Atas Nama <span class="text-danger">*</span></label>
+        <input type="text" name="account_name" class="form-control" required>
+      </div>
+      <div class="col-12"><button class="btn btn-dark px-4"><i class="bi bi-plus-lg me-1"></i> Tambah</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white"><i class="bi bi-envelope-paper me-2"></i>Daftar Rekening (<%= gifts.length %>)</div>
+  <% if (!gifts.length) { %>
+    <div class="card-body text-muted small">Belum ada rekening. Tamu akan melihat bagian amplop digital jika ada minimal satu rekening.</div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Jenis</th><th>Bank/E-Wallet</th><th>No. Rekening</th><th>Atas Nama</th><th class="text-end">Aksi</th></tr></thead>
+        <tbody>
+          <% gifts.forEach((g) => { %>
+            <tr>
+              <td><span class="badge <%= g.type === 'bank' ? 'text-bg-primary' : 'text-bg-warning' %>"><%= g.type === 'bank' ? 'Bank' : 'E-Wallet' %></span></td>
+              <td><b><%= g.bank_name %></b></td>
+              <td><code><%= g.account_number %></code></td>
+              <td><%= g.account_name %></td>
+              <td class="text-end">
+                <details class="d-inline-block text-start">
+                  <summary class="btn btn-sm btn-light border"><i class="bi bi-pencil"></i></summary>
+                  <form method="post" action="/panel/amplop/<%= g.id %>?_method=PUT" class="card p-3 shadow mt-2" style="width:300px;z-index:10;position:absolute;right:1rem">
+                    <div class="mb-2">
+                      <label class="form-label small fw-semibold">Jenis</label>
+                      <select name="type" class="form-select form-select-sm">
+                        <option value="bank" <%= g.type === 'bank' ? 'selected' : '' %>>Bank</option>
+                        <option value="ewallet" <%= g.type === 'ewallet' ? 'selected' : '' %>>E-Wallet</option>
+                      </select>
+                    </div>
+                    <div class="mb-2"><label class="form-label small fw-semibold">Nama</label><input type="text" name="bank_name" class="form-control form-control-sm" value="<%= g.bank_name %>" required></div>
+                    <div class="mb-2"><label class="form-label small fw-semibold">No. Rekening</label><input type="text" name="account_number" class="form-control form-control-sm" value="<%= g.account_number %>" required></div>
+                    <div class="mb-3"><label class="form-label small fw-semibold">Atas Nama</label><input type="text" name="account_name" class="form-control form-control-sm" value="<%= g.account_name %>" required></div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-dark">Simpan</button>
+                      <button type="button" class="btn btn-sm btn-light border" onclick="this.closest('details').open=false">Batal</button>
+                    </div>
+                  </form>
+                </details>
+                <form method="post" action="/panel/amplop/<%= g.id %>?_method=DELETE" class="d-inline-block" data-confirm="Hapus rekening <%= g.bank_name %>?">
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/panel-footer') %>

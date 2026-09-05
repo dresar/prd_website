@@ -1,0 +1,75 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Halo, <%= currentUser.name %> 👋</h4>
+    <p class="text-muted small mb-0">Ringkasan aktivitas undangan Anda.</p>
+  </div>
+  <a href="/panel/undangan/baru" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Buat Undangan</a>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-envelope-heart"></i></div>
+      <div><h3><%= stats.invitations %></h3><p>Undangan (<%= stats.published %> terbit)</p></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-person-lines-fill"></i></div>
+      <div><h3><%= stats.guests %></h3><p>Tamu terdata</p></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-ui-checks"></i></div>
+      <div><h3><%= stats.rsvps %></h3><p>Konfirmasi RSVP</p></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-danger-subtle text-danger"><i class="bi bi-chat-heart"></i></div>
+      <div><h3><%= stats.wishes %></h3><p>Ucapan masuk</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <span><i class="bi bi-clock-history me-2"></i>Undangan Terbaru</span>
+    <a href="/panel/undangan" class="small fw-semibold text-decoration-none">Lihat semua →</a>
+  </div>
+  <% if (!invs.length) { %>
+    <div class="card-body text-center py-5">
+      <div style="font-size:3rem">💌</div>
+      <h6 class="fw-bold mt-2">Belum ada undangan</h6>
+      <p class="text-muted small">Buat undangan pertama Anda dan bagikan kebahagiaan Anda.</p>
+      <a href="/panel/undangan/baru" class="btn btn-dark"><i class="bi bi-plus-lg me-1"></i> Buat Undangan</a>
+    </div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Judul</th><th>Slug</th><th>Status</th><th class="text-end">Aksi</th></tr></thead>
+        <tbody>
+          <% invs.slice(0, 5).forEach((inv) => { %>
+            <tr>
+              <td class="fw-semibold"><%= inv.title || '-' %></td>
+              <td><code>/u/<%= inv.slug %></code></td>
+              <td>
+                <% if (inv.status === 'published') { %><span class="badge text-bg-success badge-status">Terbit</span>
+                <% } else { %><span class="badge text-bg-secondary badge-status">Draf</span><% } %>
+              </td>
+              <td class="text-end">
+                <a class="btn btn-sm btn-light border" href="/panel/undangan/<%= inv.id %>/edit"><i class="bi bi-pencil"></i></a>
+                <a class="btn btn-sm btn-light border" href="/u/<%= inv.slug %>" target="_blank"><i class="bi bi-eye"></i></a>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/panel-footer') %>

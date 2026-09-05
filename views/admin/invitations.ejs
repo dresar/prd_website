@@ -1,0 +1,44 @@
+<%- include('../partials/panel-header', { title }) %>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white"><i class="bi bi-envelope-heart me-2"></i>Semua Undangan (<%= invs.length %>)</div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead><tr><th>Judul</th><th>Pemilik</th><th>Tamu</th><th>Status</th><th>Dibuat</th><th class="text-end">Aksi</th></tr></thead>
+      <tbody>
+        <% invs.forEach((i) => { %>
+          <tr>
+            <td>
+              <b><%= i.title || i.slug %></b><br>
+              <a class="small text-decoration-none" href="/u/<%= i.slug %>" target="_blank"><code>/u/<%= i.slug %></code> ↗</a>
+            </td>
+            <td><small><b><%= i.owner_name %></b><br><span class="text-muted"><%= i.owner_email %></span></small></td>
+            <td><span class="badge text-bg-light border"><%= i.guest_count %> tamu</span></td>
+            <td>
+              <% if (i.status === 'published') { %><span class="badge text-bg-success">Terbit</span>
+              <% } else { %><span class="badge text-bg-secondary">Draf</span><% } %>
+            </td>
+            <td><small class="text-muted"><%= h.formatDateTimeID(i.created_at) %></small></td>
+            <td class="text-end">
+              <div class="d-inline-flex gap-1">
+                <form method="post" action="/admin/undangan/<%= i.id %>/status">
+                  <% if (i.status === 'published') { %>
+                    <button class="btn btn-sm btn-outline-warning" title="Jadikan draf"><i class="bi bi-eye-slash"></i></button>
+                  <% } else { %>
+                    <button class="btn btn-sm btn-outline-success" title="Terbitkan"><i class="bi bi-check2-circle"></i></button>
+                  <% } %>
+                </form>
+                <a class="btn btn-sm btn-light border" href="/u/<%= i.slug %>" target="_blank" title="Lihat"><i class="bi bi-eye"></i></a>
+                <form method="post" action="/admin/undangan/<%= i.id %>?_method=DELETE" data-confirm="Hapus undangan '<%= i.title %>' milik <%= i.owner_name %> beserta seluruh datanya?">
+                  <button class="btn btn-sm btn-outline-danger" title="Hapus"><i class="bi bi-trash"></i></button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('../partials/panel-footer') %>

@@ -1,0 +1,57 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'pengaturan' }) %>
+
+<form method="post" action="/panel/undangan/<%= inv.id %>/pengaturan">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white"><i class="bi bi-sliders me-2"></i>Pengaturan Undangan</div>
+        <div class="card-body">
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">Tautan (slug)</label>
+            <div class="input-group">
+              <span class="input-group-text font-monospace">/u/</span>
+              <input type="text" name="slug" class="form-control" value="<%= inv.slug %>" pattern="[a-z0-9\-]+" title="Huruf kecil, angka, dan tanda minus saja">
+            </div>
+            <div class="form-text">Hanya huruf kecil, angka, dan tanda minus. Contoh: <code>budi-sinta</code>.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label small fw-semibold">URL Musik Latar (mp3)</label>
+            <input type="url" name="music_url" class="form-control" value="<%= inv.music_url %>" placeholder="https://.../lagu.mp3">
+            <div class="form-text">Kosongkan jika tidak ingin musik. File harus dapat diakses publik.</div>
+          </div>
+          <hr>
+          <div class="form-check form-switch mb-2">
+            <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch" name="status" value="published" <%= inv.status === 'published' ? 'checked' : '' %>>
+            <label class="form-check-label" for="statusSwitch">
+              <b>Terbitkan undangan</b>
+              <span class="d-block small text-muted">Jika aktif, undangan bisa diakses publik melalui tautannya.</span>
+            </label>
+          </div>
+          <button class="btn btn-dark px-4 mt-3"><i class="bi bi-check-lg me-1"></i> Simpan Pengaturan</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white"><i class="bi bi-palette me-2"></i>Tema</div>
+        <div class="card-body">
+          <% themes.forEach((t) => { const c = h.safeJSON(t.colors, {}); %>
+            <label class="theme-pick d-flex align-items-center gap-2 p-2 rounded border mb-2">
+              <input type="radio" name="theme_id" value="<%= t.id %>" <%= inv.theme_id === t.id ? 'checked' : '' %>>
+              <span class="theme-mini" style="background:linear-gradient(135deg,<%= c.bg %>,<%= c.accent %>)"></span>
+              <span class="small fw-semibold"><%= t.name %></span>
+              <% if (t.is_premium) { %><span class="badge text-bg-dark ms-auto">Premium</span><% } %>
+            </label>
+          <% }) %>
+          <p class="small text-muted mb-0 mt-2">Warna undangan otomatis mengikuti tema yang dipilih.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<style>.theme-pick { cursor: pointer; } .theme-pick:has(input:checked) { border-color: #26221d; background: #faf8f4; } .theme-mini { width: 34px; height: 34px; border-radius: 8px; flex: none; border: 1px solid rgba(0,0,0,0.08); }</style>
+
+<%- include('../partials/panel-footer') %>

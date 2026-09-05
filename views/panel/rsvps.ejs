@@ -1,0 +1,63 @@
+<%- include('../partials/panel-header', { title }) %>
+<%- include('../partials/inv-tabs', { inv, tab: 'rsvp' }) %>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-success-subtle text-success"><i class="bi bi-check2-circle"></i></div>
+      <div><h3><%= summary.hadir %></h3><p>Hadir</p></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-warning-subtle text-warning"><i class="bi bi-question-circle"></i></div>
+      <div><h3><%= summary.ragu %></h3><p>Masih ragu</p></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-danger-subtle text-danger"><i class="bi bi-x-circle"></i></div>
+      <div><h3><%= summary.tidak %></h3><p>Berhalangan</p></div>
+    </div>
+  </div>
+  <div class="col-6 col-lg-3">
+    <div class="stat-card">
+      <div class="stat-icon bg-primary-subtle text-primary"><i class="bi bi-people"></i></div>
+      <div><h3><%= summary.orang %></h3><p>Estimasi orang hadir</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+  <div class="card-header bg-white"><i class="bi bi-ui-checks me-2"></i>Daftar Konfirmasi (<%= rsvps.length %>)</div>
+  <% if (!rsvps.length) { %>
+    <div class="card-body text-muted small">Belum ada konfirmasi kehadiran masuk.</div>
+  <% } else { %>
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Nama</th><th>Kehadiran</th><th>Jumlah</th><th>Waktu</th><th class="text-end">Aksi</th></tr></thead>
+        <tbody>
+          <% rsvps.forEach((r) => { %>
+            <tr>
+              <td><b><%= r.name %></b><% if (r.guest_name) { %> <small class="text-muted">(dari daftar tamu)</small><% } %></td>
+              <td>
+                <% if (r.attendance === 'hadir') { %><span class="badge text-bg-success">Hadir</span><% } %>
+                <% if (r.attendance === 'ragu') { %><span class="badge text-bg-warning">Ragu</span><% } %>
+                <% if (r.attendance === 'tidak') { %><span class="badge text-bg-danger">Berhalangan</span><% } %>
+              </td>
+              <td><%= r.attendance === 'tidak' ? '–' : r.attendee_count + ' orang' %></td>
+              <td><small class="text-muted"><%= h.formatDateTimeID(r.created_at) %></small></td>
+              <td class="text-end">
+                <form method="post" action="/panel/rsvp/<%= r.id %>?_method=DELETE" data-confirm="Hapus RSVP dari <%= r.name %>?">
+                  <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/panel-footer') %>
